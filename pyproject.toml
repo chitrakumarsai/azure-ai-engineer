@@ -1,0 +1,14 @@
+[project]
+name = "azure-ai-engineer"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "promptflow>=1.18.0",
+    "promptflow-azure>=1.18.0",
+    "promptflow-core>=1.18.0",
+    "promptflow-devkit>=1.18.0",
+    "promptflow-tools>=1.6.0",
+    "promptflow-tracing>=1.18.0",
+]

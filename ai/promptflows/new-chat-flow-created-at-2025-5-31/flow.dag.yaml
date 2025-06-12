@@ -1,0 +1,60 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    is_chat_history: true
+    default: []
+  question:
+    type: string
+    is_chat_input: true
+    default: Ariel was playing basketball. 1 of her shots went in the hoop. 2 of her
+      shots did not go in the hoop. How many shots were there in total?
+outputs:
+  answer:
+    type: string
+    reference: ${python_test.output}
+    is_chat_output: true
+nodes:
+- name: chat
+  use_variants: true
+- name: python_test
+  type: python
+  source:
+    type: code
+    path: python_test.py
+  inputs:
+    input1: ${chat.output}
+node_variants:
+  chat:
+    default_variant_id: variant_0
+    variants:
+      variant_0:
+        node:
+          type: llm
+          source:
+            type: code
+            path: chat.jinja2
+          inputs:
+            deployment_name: gpt-35-turbo
+            max_tokens: 256
+            temperature: 0.7
+            chat_history: ${inputs.chat_history}
+            question: ${inputs.question}
+          connection: cks-azure-openai-connection
+          api: chat
+      variant_1:
+        node:
+          type: llm
+          source:
+            type: code
+            path: chat_variant_1.jinja2
+          inputs:
+            deployment_name: gpt-35-turbo
+            max_tokens: 256
+            temperature: 0.7
+            chat_history: ${inputs.chat_history}
+            question: ${inputs.question}
+          connection: cks-azure-openai-connection
+          api: chat
